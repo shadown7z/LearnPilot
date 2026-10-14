@@ -101,6 +101,14 @@ adb shell am start -n com.atlaes.learnpilot/.MainActivity
 adb logcat
 ```
 
+如果 Android Studio 提示 `Activity class {com.atlaes.myapplication2/com.atlaes.learnpilot.MainActivity} does not exist`，说明 IDE 仍在使用重命名前的应用 ID。Gradle 中的实际应用 ID 是 `com.atlaes.learnpilot`，无需改回旧包名或卸载清空数据：
+
+1. 确认打开的是本仓库项目，执行 **File → Sync Project with Gradle Files**，等待同步成功。
+2. 在运行配置下拉框选择仓库提供的 **LearnPilot**；它通过 **Default Activity** 启动 Manifest 声明的入口。
+3. 如需使用原有 `app` 配置，进入 **Run → Edit Configurations**，确认 Module 为本项目的 `app`，Launch 为 **Default Activity**，再重新运行。
+
+可先用上面的 `adb shell am start` 命令验证手机中的应用入口。正确组件为 `com.atlaes.learnpilot/.MainActivity`。
+
 正式发布前需要自行配置 Release 签名，并检查备份策略、版本号和发布要求。当前仓库未配置发布密钥。
 
 ## 核心逻辑
@@ -170,13 +178,15 @@ python -m venv .venv
 # 编译并生成 Debug APK
 .\gradlew.bat :app:assembleDebug
 
-# 有可用设备时运行现有仪器测试
+# 在模拟器或没有需要保留的数据的测试设备上运行仪器测试
 .\gradlew.bat :app:connectedDebugAndroidTest
 ```
 
+Gradle 仪器测试流程可能卸载并重新安装被测应用，清除已有本地数据。请使用专用测试设备或模拟器；测试结束后如应用被清理，可重新安装 Debug APK。日常运行与调试使用 Android Studio 的 Run 或上面的 `adb install -r` 命令即可。
+
 `PlannerTest` 包含 5 项业务测试，覆盖方法推荐差异、任务时长预算、复习间隔、无效输入和所有方法的详情数据。测试报告生成在 `app/build/reports/tests/testDebugUnitTest/index.html`。
 
-仓库当前的仪器测试仍为基础模板，尚未覆盖完整页面交互。验收时还需在设备上检查：
+仓库当前的仪器测试检查实际应用包名和 Launcher Activity 解析，尚未覆盖完整页面交互。验收时还需在设备上检查：
 
 - 「更多 → 方法 → 详情」的顶部返回、系统返回和列表位置恢复。
 - 方法卡片点击进入对应详情，长按只复制方法名称并显示提示。

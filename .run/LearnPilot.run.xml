@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="LearnPilot" type="AndroidRunConfigurationType" factoryName="Android App">
+    <module name="My_Application2.app" />
+    <option name="DEPLOY" value="true" />
+    <option name="CLEAR_APP_STORAGE" value="false" />
+    <option name="MODE" value="default_activity" />
+    <method v="2">
+      <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>
